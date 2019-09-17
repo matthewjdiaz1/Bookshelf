@@ -1,19 +1,15 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
+const db = require('./queries.js');
+const path = require('path');
 const port = 3000;
 
-app.use(express.static('public'));
 
-app.get('/api/bookshelf', function (req, res) {
-  const book = req.params.author
-  book.fetch(chord, function (err, data) {
-    if (err) {
-      console.log('server data', data);
-      res.sendStatus(500);
-    } else {
-      res.json(data);
-    }
-  });
-});
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '/../client/public')));
+
+app.get('/api/bookshelf/:author', db.getBooksByAuthor);
 
 app.listen(port, () => console.log(`App listening on port ${port}.`));
